@@ -1,88 +1,82 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import axios from 'axios'; // Para hacer solicitudes HTTP
 
 export default function PantallaPuerta() {
-    const router = useRouter();
-
     // Estado para saber si la puerta está abierta (true) o cerrada (false)
     const [puertaAbierta, setPuertaAbierta] = useState(false);
 
-    // Alternar el estado de la puerta
-    const handleTogglePuerta = () => {
-        setPuertaAbierta(!puertaAbierta);
+    // Función para abrir o cerrar la puerta
+    const handleTogglePuerta = async () => {
+        try {
+            // Realizamos la solicitud al backend para abrir o cerrar la puerta
+            const url = puertaAbierta 
+                ? 'http://ipconfig:30/api/door/cerrar' 
+                : 'http://ipconfig:3000/api/door/abrir';
+            const response = await axios.get(url);  // Llamada al backend
+
+            // Si la respuesta es exitosa, actualizamos el estado de la puerta
+            setPuertaAbierta(!puertaAbierta);
+            alert(response.data);  // Muestra el mensaje recibido del backend
+        } catch (error) {
+            console.error("Error al controlar la puerta:", error);
+            alert('Error al controlar la puerta');
+        }
     };
 
     return (
         <SafeAreaView style={styles.screen}>
-        <ScrollView style={{ flex: 1 }}>
-            
-            {/* Tarjeta principal */}
-            <View style={styles.cardContainer}>
+            <ScrollView style={{ flex: 1 }}>
+                {/* Tarjeta principal */}
+                <View style={styles.cardContainer}>
 
-            {/* Barra Superior */}
-            <View style={styles.topBar}>
-                <Text style={styles.logo}>Segurix</Text>
-                <View style={styles.nav}>
-                {/* Empresa */}
-                <TouchableOpacity onPress={() => router.push('/empresa')}>
-                    <Text style={styles.navText}>Empresa</Text>
-                </TouchableOpacity>
-                {/* Productos */}
-                <TouchableOpacity onPress={() => router.push('/productCatalog')}>
-                    <Text style={styles.navText}>Productos</Text>
-                </TouchableOpacity>
-                {/* Dispositivo IOT (ya sin negritas) */}
-                <TouchableOpacity onPress={() => router.push('/puerta')}>
-                    <Text style={styles.navText}>Dispositivo IOT</Text>
-                </TouchableOpacity>
-                </View>
-            </View>
+                    {/* Barra Superior */}
+                    <View style={styles.topBar}>
+                        <Text style={styles.logo}>Segurix</Text>
+                    </View>
 
-            {/* Contenido principal */}
-            <View style={styles.contentContainer}>
-                <Text style={styles.encabezado}>Dispositivo IOT</Text>
+                    {/* Contenido principal */}
+                    <View style={styles.contentContainer}>
+                        <Text style={styles.encabezado}>Dispositivo IOT</Text>
 
-                {/* Ícono de la puerta */}
-                <FontAwesome5
-                name={puertaAbierta ? "door-open" : "door-closed"}
-                size={150}
-                color="#1E1E1E"
-                style={{ marginBottom: 30 }}
-                />
+                        {/* Ícono de la puerta */}
+                        <FontAwesome5
+                            name={puertaAbierta ? "door-open" : "door-closed"}
+                            size={150}
+                            color="#1E1E1E"
+                            style={{ marginBottom: 30 }}
+                        />
 
-                {/* Botón para abrir/cerrar */}
-                <TouchableOpacity style={styles.botonPuerta} onPress={handleTogglePuerta}>
-                <Text style={styles.textoBoton}>
-                    {puertaAbierta ? "Cerrar puerta" : "Abrir puerta"}
-                </Text>
-                </TouchableOpacity>
+                        {/* Botón para abrir/cerrar */}
+                        <TouchableOpacity style={styles.botonPuerta} onPress={handleTogglePuerta}>
+                            <Text style={styles.textoBoton}>
+                                {puertaAbierta ? "Cerrar puerta" : "Abrir puerta"}
+                            </Text>
+                        </TouchableOpacity>
 
-                {/* Botones de Configuración y Registros */}
-                <View style={styles.bottomButtons}>
-                <TouchableOpacity style={styles.configButton} onPress={() => router.push('/configuracionDispositivo')}>
-                <FontAwesome5 name="file-alt" size={20} color="#1E1E1E" style={styles.buttonIcon} />
-                <Text style={styles.configButtonText}>Configuración</Text>
-                </TouchableOpacity>
+                        {/* Botones de Configuración y Registros */}
+                        <View style={styles.bottomButtons}>
+                            <TouchableOpacity style={styles.configButton}>
+                                <FontAwesome5 name="file-alt" size={20} color="#1E1E1E" style={styles.buttonIcon} />
+                                <Text style={styles.configButtonText}>Configuración</Text>
+                            </TouchableOpacity>
 
-                {/* Boton Registros */}
-                <TouchableOpacity style={styles.configButton} onPress={() => router.push('/registros')}>
-                <FontAwesome5 name="file-alt" size={20} color="#1E1E1E" style={styles.buttonIcon} />
-                <Text style={styles.configButtonText}>Registros</Text>
-                </TouchableOpacity>
+                            {/* Botón Registros */}
+                            <TouchableOpacity style={styles.configButton}>
+                                <FontAwesome5 name="file-alt" size={20} color="#1E1E1E" style={styles.buttonIcon} />
+                                <Text style={styles.configButtonText}>Registros</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
                 </View>
-            </View>
-
-            </View>
-        </ScrollView>
+            </ScrollView>
         </SafeAreaView>
     );
-    }
+}
 
-    const styles = StyleSheet.create({
-    /* Fondo azul suave */
+const styles = StyleSheet.create({
     screen: {
         flex: 1,
         backgroundColor: '#CFE2FF',
@@ -92,15 +86,12 @@ export default function PantallaPuerta() {
         backgroundColor: '#FFFFFF',
         borderRadius: 15,
         padding: 20,
-        // Sombra en iOS
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 5,
-        // Sombra en Android
         elevation: 6,
     },
-    /* Barra Superior */
     topBar: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -115,15 +106,6 @@ export default function PantallaPuerta() {
         fontWeight: 'bold',
         color: '#1E1E1E',
     },
-    nav: {
-        flexDirection: 'row',
-    },
-    navText: {
-        fontSize: 16,
-        color: '#1E1E1E',
-        marginLeft: 20,
-    },
-    /* Contenido principal */
     contentContainer: {
         alignItems: 'center',
         marginTop: 20,
@@ -134,20 +116,18 @@ export default function PantallaPuerta() {
         color: '#1E1E1E',
         marginBottom: 20,
     },
-    /* Botón para abrir/cerrar la puerta */
     botonPuerta: {
-        backgroundColor: '#1E1E1E', // Botón en negro
+        backgroundColor: '#1E1E1E',
         paddingVertical: 12,
         paddingHorizontal: 40,
         borderRadius: 25,
         marginBottom: 30,
     },
     textoBoton: {
-        color: '#FFFFFF', // Texto blanco
+        color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '600',
     },
-    /* Botones de Configuración y Registros */
     bottomButtons: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
