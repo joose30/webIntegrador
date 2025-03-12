@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     ActivityIndicator,
+    Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 
@@ -16,29 +17,42 @@ export default function RFIDControlScreen() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const ESP32_IP = "http://192.168.1.108"; // Cambia por la IP real de tu ESP32
+    const ESP32_IP = "http://172.31.99.115"; // Cambia por la IP real de tu ESP32
 
     const handleScanRFID = async () => {
         setLoading(true);
+        setRfidUID(null); // Limpiar el UID anterior
+        setAccessGranted(null); // Limpiar el estado de acceso anterior
+
         try {
             const response = await fetch(`${ESP32_IP}/leerRFID`);
             const text = await response.text();
-    
+
             if (response.status === 200) {
                 setRfidUID(text);
-                setAccessGranted(true); // Aquí puedes validar si el UID es permitido
+                // Aquí puedes agregar lógica para validar si el UID es permitido
+                const isUIDValid = true; // Cambia esto según tu lógica de validación
+                setAccessGranted(isUIDValid);
+
+                if (isUIDValid) {
+                    Alert.alert("Acceso Concedido", `UID: ${text}`);
+                } else {
+                    Alert.alert("Acceso Denegado", `UID: ${text} no está autorizado.`);
+                }
             } else {
                 setRfidUID("No se detectó tarjeta");
                 setAccessGranted(false);
+                Alert.alert("Error", "No se detectó ninguna tarjeta RFID.");
             }
         } catch (error) {
             console.error("Error al leer RFID:", error);
             setRfidUID("Error de conexión");
             setAccessGranted(false);
+            Alert.alert("Error", "No se pudo conectar al servidor.");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
-    
 
     const handleReturn = () => {
         router.push('/');
@@ -73,8 +87,10 @@ export default function RFIDControlScreen() {
                             <Text style={styles.promptText}>Presiona el botón para leer RFID</Text>
                         )}
 
-                        <TouchableOpacity style={styles.scanButton} onPress={handleScanRFID}>
-                            <Text style={styles.scanButtonText}>Leer RFID</Text>
+                        <TouchableOpacity style={styles.scanButton} onPress={handleScanRFID} disabled={loading}>
+                            <Text style={styles.scanButtonText}>
+                                {loading ? "Leyendo..." : "Leer RFID"}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
