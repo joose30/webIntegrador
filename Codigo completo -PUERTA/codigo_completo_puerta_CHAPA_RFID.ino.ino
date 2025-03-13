@@ -124,6 +124,7 @@ void setup() {
   // Configurar rutas del servidor web
   server.on("/leerRFID", handleLeerRFID); // Ruta para leer el RFID
   server.on("/controlPuerta", handleControlPuerta); // Ruta para controlar la puerta
+  server.on("/registrarHuella", handleRegistrarHuella);
 
   // Iniciar servidor
   server.begin();
@@ -131,6 +132,43 @@ void setup() {
 
   mostrarMenuPrincipal();
 }
+
+void handleRegistrarHuella() {
+  // Verificar si hay espacio disponible
+  uint8_t count = 0;
+  finger.getTemplateCount(&count);
+  
+  if (count >= 127) {
+    server.send(500, "text/plain", "Error: Memoria de huellas llena");
+    return;
+  }
+
+  // Configurar timeout
+  unsigned long startTime = millis();
+  const unsigned long TIMEOUT = 30000; // 30 segundos de timeout
+  
+  int id = -1;
+  
+  // Intentar capturar la huella con timeout
+  while (millis() - startTime < TIMEOUT) {
+    id = capturarHuella();
+    if (id > 0) {
+      String response = "Huella registrada con ID: " + String(id);
+      server.send(200, "text/plain", response);
+      return;
+    } else if (id == -1) {
+      // Error específico durante la captura
+      server.send(500, "text/plain", "Error durante la captura de huella");
+      return;
+    }
+    // Pequeña pausa para no saturar el procesador
+    delay(100);
+  }
+  
+  // Si llegamos aquí, hubo timeout
+  server.send(408, "text/plain", "Tiempo de espera agotado");
+}
+
 
 void handleLeerRFID() {
   // Agregar encabezados CORS

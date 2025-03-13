@@ -30,6 +30,9 @@ import {
                 <TouchableOpacity onPress={() => router.push('/productCatalog')}>
                     <Text style={styles.navText}>Productos</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/huella')}>
+                    <Text style={styles.navText}>Huella</Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/puerta')}>
                     <Text style={styles.navText}>Dispositivo IOT</Text>
                 </TouchableOpacity>

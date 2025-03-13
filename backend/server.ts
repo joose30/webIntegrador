@@ -4,6 +4,7 @@ import connectDB from './config/db';
 import fingerprintRoutes from './routes/fingerprintRoutes';
 import passwordRoutes from './routes/passwordRoutes';
 import userRoutes from './routes/userRoutes';
+import huellaRoutes from './routes/huellaRoutes';
 import doorRoutes from './routes/doorRoutes';  // Importa las rutas para la puerta
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/api/fingerprints', fingerprintRoutes); // Rutas para huellas dactilare
 app.use('/api/passwords', passwordRoutes); // Rutas para contraseñas
 app.use('/api/users', userRoutes); // Rutas para usuarios
 app.use('/api/door', doorRoutes);  // Rutas para el control de la puerta
+app.use('/api/huella', huellaRoutes);  // Rutas para el control de huellas
 
 // Iniciar servidor
 app.listen(PORT, () => {
