@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     SafeAreaView,
     ScrollView,
@@ -6,90 +6,104 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    Switch,
     StyleSheet
-    } from 'react-native';
-    import { useRouter } from 'expo-router';
-    import { Entypo, Ionicons } from '@expo/vector-icons';
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
-    export default function ConfiguracionDispositivo() {
+export default function ConfiguracionDispositivo() {
     const router = useRouter();
+
+    // Estado para los switches
+    const [seguroActivo, setSeguroActivo] = useState(false);  // Switch de seguros
+    const [alarmaActiva, setAlarmaActiva] = useState(false);  // Switch de alarma
+
+    // Funciones para manejar el cambio de estado
+    const toggleSeguro = () => setSeguroActivo(!seguroActivo);
+    const toggleAlarma = () => setAlarmaActiva(!alarmaActiva);
 
     return (
         <SafeAreaView style={styles.screen}>
-        <ScrollView style={{ flex: 1 }}>
-            
-            {/* Tarjeta principal */}
-            <View style={styles.cardContainer}>
+            <ScrollView style={{ flex: 1 }}>
+                
+                {/* Tarjeta principal */}
+                <View style={styles.cardContainer}>
+                
+                    {/* Barra Superior */}
+                    <View style={styles.topBar}>
+                        <Text style={styles.logo}>Segurix</Text>
+                        <View style={styles.nav}>
+                            <TouchableOpacity onPress={() => router.push('/empresa')}>
+                                <Text style={styles.navText}>Empresa</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => console.log('Ver productos')}>
+                                <Text style={styles.navText}>Productos</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => router.push('/puerta')}>
+                                <Text style={styles.navText}>Dispositivo IOT</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
-            {/* Barra Superior */}
-            <View style={styles.topBar}>
-                <Text style={styles.logo}>Segurix</Text>
-                <View style={styles.nav}>
-                <TouchableOpacity onPress={() => router.push('/empresa')}>
-                    <Text style={styles.navText}>Empresa</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => console.log('Ver productos')}>
-                    <Text style={styles.navText}>Productos</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.push('/puerta')}>
-                    <Text style={styles.navText}>Dispositivo IOT</Text>
-                </TouchableOpacity>
+                    {/* Contenido principal */}
+                    <View style={styles.mainContent}>
+                        <Text style={styles.title}>Configuración de mi dispositivo</Text>
+
+                        {/* ID del dispositivo */}
+                        <View style={styles.inputRow}>
+                            <Text style={styles.label}>ID del dispositivo</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="XXX XXX XXXX"
+                                placeholderTextColor="#999"
+                            />
+                        </View>
+
+                        {/* Desactivar todos los seguros */}
+                        <View style={styles.toggleRow}>
+                            <Text style={styles.toggleLabel}>Desactivar todos los seguros</Text>
+                            <Switch
+                                value={seguroActivo}
+                                onValueChange={toggleSeguro}
+                                trackColor={{ false: "#767577", true: "#81b0ff" }}
+                                thumbColor={seguroActivo ? "#4CAF50" : "#f4f3f4"}
+                            />
+                        </View>
+
+                        {/* Desactivar alarma sonora */}
+                        <View style={styles.toggleRow}>
+                            <Text style={styles.toggleLabel}>Desactivar alarma sonora</Text>
+                            <Switch
+                                value={alarmaActiva}
+                                onValueChange={toggleAlarma}
+                                trackColor={{ false: "#767577", true: "#81b0ff" }}
+                                thumbColor={alarmaActiva ? "#4CAF50" : "#f4f3f4"}
+                            />
+                        </View>
+
+                        {/* Opciones extra */}
+                        <TouchableOpacity
+                            style={styles.optionRow}
+                            onPress={() => router.push('/gestionarUsuarios')}>
+                            <Text style={styles.optionText}>Gestionar perfiles del dispositivo IoT</Text>
+                            <Ionicons name="chevron-forward-outline" size={20} color="#1E1E1E" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.optionRow} onPress={() => console.log('Cambiar PIN')}>
+                            <Text style={styles.optionText}>Cambiar PIN de seguridad del dispositivo</Text>
+                            <Ionicons name="chevron-forward-outline" size={20} color="#1E1E1E" />
+                        </TouchableOpacity>
+
+                    </View>
+
                 </View>
-            </View>
-
-            {/* Contenido principal */}
-            <View style={styles.mainContent}>
-                <Text style={styles.title}>Configuración de mi dispositivo</Text>
-
-                {/* ID del dispositivo */}
-                <View style={styles.inputRow}>
-                <Text style={styles.label}>ID del dispositivo</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="XXX XXX XXXX"
-                    placeholderTextColor="#999"
-                />
-                </View>
-
-                {/* Desactivar todos los seguros */}
-                <View style={styles.toggleRow}>
-                <Text style={styles.toggleLabel}>Desactivar todos los seguros</Text>
-                <TouchableOpacity onPress={() => console.log('Toggle Seguros')}>
-                    <Ionicons name="toggle-outline" size={32} color="#1E1E1E" />
-                </TouchableOpacity>
-                </View>
-
-                {/* Desactivar alarma sonora */}
-                <View style={styles.toggleRow}>
-                <Text style={styles.toggleLabel}>Desactivar alarma sonora</Text>
-                <TouchableOpacity onPress={() => console.log('Toggle Alarma')}>
-                    <Ionicons name="toggle-outline" size={32} color="#1E1E1E" />
-                </TouchableOpacity>
-                </View>
-
-                {/* Opciones extra */}
-                <TouchableOpacity
-                style={styles.optionRow}
-                onPress={() => router.push('/gestionarUsuarios')}  // <--- Ajustar aquí
-                >
-                <Text style={styles.optionText}>Gestionar perfiles del dispositivo IoT</Text>
-                <Ionicons name="chevron-forward-outline" size={20} color="#1E1E1E" />
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.optionRow} onPress={() => console.log('Cambiar PIN')}>
-                <Text style={styles.optionText}>Cambiar PIN de seguridad del dispositivo</Text>
-                <Ionicons name="chevron-forward-outline" size={20} color="#1E1E1E" />
-                </TouchableOpacity>
-
-            </View>
-
-            </View>
-        </ScrollView>
+            </ScrollView>
         </SafeAreaView>
     );
-    }
+}
 
-    const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     /* Fondo azul suave */
     screen: {
         flex: 1,
