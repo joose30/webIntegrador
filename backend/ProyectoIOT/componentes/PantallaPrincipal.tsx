@@ -39,6 +39,10 @@ import {
                 <TouchableOpacity onPress={() => router.push('/rfidControl' as any)}>
                 <Text style={styles.navText}>RFID</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/perfil')}>
+                    <Text style={styles.navText}>Perfil</Text>
+                </TouchableOpacity>
+
 
                 </View>
             </View>
