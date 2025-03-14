@@ -42,7 +42,9 @@ import {
                 <TouchableOpacity onPress={() => router.push('/perfil')}>
                     <Text style={styles.navText}>Perfil</Text>
                 </TouchableOpacity>
-
+                <TouchableOpacity onPress={() => router.push('/Aggprod' as any)}>
+                    <Text style={styles.navText}>Admin(agg prod)</Text>
+                </TouchableOpacity>
 
                 </View>
             </View>
