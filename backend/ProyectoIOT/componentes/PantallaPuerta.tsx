@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios'; // Para hacer solicitudes HTTP
+import { router } from 'expo-router';
 
 export default function PantallaPuerta() {
     // Estado para saber si la puerta está abierta (true) o cerrada (false)
@@ -12,8 +13,8 @@ export default function PantallaPuerta() {
         try {
             // Realizamos la solicitud al backend para abrir o cerrar la puerta
             const url = puertaAbierta 
-                ? 'http://172.31.99.55:8082/api/door/cerrar' //ip de IPCONFIG
-                : 'http://172.31.99.55:8082/api/door/abrir';
+                ? 'http://192.168.137.254:8082/api/door/cerrar' //ip de IPCONFIG
+                : 'http://192.168.137.254:8082/api/door/abrir';
             const response = await axios.get(url);  // Llamada al backend
 
             // Si la respuesta es exitosa, actualizamos el estado de la puerta
@@ -57,13 +58,13 @@ export default function PantallaPuerta() {
 
                         {/* Botones de Configuración y Registros */}
                         <View style={styles.bottomButtons}>
-                            <TouchableOpacity style={styles.configButton}>
+                            <TouchableOpacity style={styles.configButton} onPress={() => router.push('/configuracionDispositivo')}>
                                 <FontAwesome5 name="file-alt" size={20} color="#1E1E1E" style={styles.buttonIcon} />
                                 <Text style={styles.configButtonText}>Configuración</Text>
                             </TouchableOpacity>
 
                             {/* Botón Registros */}
-                            <TouchableOpacity style={styles.configButton}>
+                            <TouchableOpacity style={styles.configButton}onPress={() => router.push('/registros')}>
                                 <FontAwesome5 name="file-alt" size={20} color="#1E1E1E" style={styles.buttonIcon} />
                                 <Text style={styles.configButtonText}>Registros</Text>
                             </TouchableOpacity>
