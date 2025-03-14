@@ -1,79 +1,73 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import User from '../models/User';
+import bcrypt from 'bcrypt';
 
-// Función para registrar un nuevo usuario
-export const registerUser = async (req: Request, res: Response) => {
+// Tipado explícito para las funciones del controlador
+export const registerUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const { name, lastName, surname, phone, email, password } = req.body;
-
-        // Verificar si el usuario ya existe
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'El usuario ya existe' });
-        }
-
-        // Crear nuevo usuario
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             name,
             lastName,
             surname,
             phone,
             email,
-            password // Idealmente deberías encriptar esta contraseña
+            password: hashedPassword,
         });
-
         await newUser.save();
-
-        res.status(201).json({
-            message: 'Usuario registrado correctamente',
-            userId: newUser._id
-        });
+        res.status(201).json(newUser);
     } catch (error) {
-        console.error('Error al registrar usuario:', error);
-        res.status(500).json({ message: 'Error del servidor' });
+        next(error);
     }
 };
 
-// Función para obtener un usuario por ID
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
-        const userId = req.params.id;
-
-        const user = await User.findById(userId).select('-password');
-
+        const { id } = req.params;
+        const user = await User.findById(id).select('-password');
         if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         }
-
         res.status(200).json(user);
     } catch (error) {
-        console.error('Error al obtener usuario:', error);
-        res.status(500).json({ message: 'Error del servidor' });
+        next(error);
     }
 };
 
-// Función para actualizar un usuario
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
-        const userId = req.params.id;
-        const { name, lastName, surname, phone, email } = req.body;
+        const { id } = req.params;
+        const updates = req.body;
+
+        if (updates.password) {
+            updates.password = await bcrypt.hash(updates.password, 10);
+        }
 
         const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { name, lastName, surname, phone, email },
-            { new: true, runValidators: true }
+            id,
+            updates,
+            { new: true }
         ).select('-password');
 
         if (!updatedUser) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
-        res.status(200).json({
-            message: 'Usuario actualizado correctamente',
-            user: updatedUser
-        });
+        res.status(200).json(updatedUser);
     } catch (error) {
-        console.error('Error al actualizar usuario:', error);
-        res.status(500).json({ message: 'Error del servidor' });
+        next(error);
     }
 };
