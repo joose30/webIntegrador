@@ -45,6 +45,9 @@ import {
                 <TouchableOpacity onPress={() => router.push('/Aggprod' as any)}>
                     <Text style={styles.navText}>Admin(agg prod)</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/AggDatosEmp' as any)}>
+                    <Text style={styles.navText}>Admin(datos empresa)</Text>
+                </TouchableOpacity>
 
                 </View>
             </View>
