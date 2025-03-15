@@ -24,24 +24,29 @@ export default function PantallaDatosEmpresa() {
 
     const handleSubmit = async () => {
         try {
-            // Actualizar la URL base para todas las solicitudes
             const API_BASE = 'http://localhost:8082/api';
+            // Actualizar empresa (cambiando 'update' por 'actualizar')
+            await axios.put(`${API_BASE}/empresa/actualizar`, formData.empresa);
 
-            await axios.put(`${API_BASE}/empresa`, formData.empresa);
-
+            // Crear elementos (las demás rutas están correctas)
             await Promise.all([
-                formData.pregunta.pregunta && axios.post(`${API_BASE}/preguntas`, formData.pregunta),
-                formData.mision && axios.post(`${API_BASE}/misiones`, { contenido: formData.mision }),
-                formData.vision && axios.post(`${API_BASE}/visiones`, { contenido: formData.vision }),
-                formData.valor && axios.post(`${API_BASE}/valores`, { contenido: formData.valor }),
-                formData.politica && axios.post(`${API_BASE}/politicas`, { descripcion: formData.politica })
+                formData.pregunta.pregunta && axios.post(`${API_BASE}/empresa/preguntas`, formData.pregunta),
+                formData.mision && axios.post(`${API_BASE}/empresa/misiones`, { contenido: formData.mision }),
+                formData.vision && axios.post(`${API_BASE}/empresa/visiones`, { contenido: formData.vision }),
+                formData.valor && axios.post(`${API_BASE}/empresa/valores`, { contenido: formData.valor }),
+                formData.politica && axios.post(`${API_BASE}/empresa/politicas`, { descripcion: formData.politica })
             ]);
 
             router.back();
         } catch (error) {
             console.error('Error guardando datos:', error);
+            // Agregar un mejor manejo de errores
+            // if (axios.isAxiosError(error)) {
+            //     console.error('Error de respuesta:', error.response?.data);
+            // }
         }
     };
+
 
     return (
         <SafeAreaView style={styles.screen}>

@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 8082;
 app.use(cors({
   origin: '*', // Permite cualquier origen (ajusta en producción)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Métodos permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
   credentials: true, // Permite credenciales (cookies, headers de autenticación)
 }));
 
@@ -35,6 +36,7 @@ connectDB();
 
 // Middleware para parsear JSON
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Rutas
 app.use('/api/fingerprints', fingerprintRoutes); // Rutas para huellas dactilares
