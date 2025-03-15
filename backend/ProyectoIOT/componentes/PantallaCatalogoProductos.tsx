@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import {
+    SafeAreaView,
+    ScrollView,
+    View,
+    Text,
+    StyleSheet,
+    FlatList,
+    ActivityIndicator,
+    TouchableOpacity,
+    Image
+} from 'react-native';
 import axios from 'axios';
+import { useRouter } from 'expo-router';
+import { Entypo } from '@expo/vector-icons';
 
 interface Product {
     _id: string;
@@ -11,6 +23,7 @@ interface Product {
 }
 
 export default function PantallaCatalogoProductos() {
+    const router = useRouter();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -61,11 +74,37 @@ export default function PantallaCatalogoProductos() {
 
     return (
         <SafeAreaView style={styles.screen}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ScrollView style={{ flex: 1 }}>
                 <View style={styles.cardContainer}>
+                    {/* Header idéntico a PantallaPrincipal */}
                     <View style={styles.topBar}>
                         <Text style={styles.logo}>Segurix</Text>
+                        <View style={styles.nav}>
+                            <TouchableOpacity onPress={() => router.push('/empresa')}>
+                                <Text style={styles.navText}>Empresa</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => router.push('/CatalogoProductosScreen')}>
+                                <Text style={styles.navText}>Productos</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => router.push('/huella')}>
+                                <Text style={styles.navText}>Huella</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => router.push('/puerta')}>
+                                <Text style={styles.navText}>Dispositivo IOT</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => router.push('/rfidControl' as any)}>
+                                <Text style={styles.navText}>RFID</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => router.push('/perfil')}>
+                                <Text style={styles.navText}>Perfil</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => router.push('/Aggprod' as any)}>
+                                <Text style={styles.navText}>Admin(agg prod)</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
+
+                    {/* Contenido principal del catálogo */}
                     <Text style={styles.title}>Catálogo de Productos</Text>
                     <FlatList
                         data={products}
@@ -74,46 +113,93 @@ export default function PantallaCatalogoProductos() {
                         scrollEnabled={false}
                         contentContainerStyle={styles.listContent}
                     />
+
+                    {/* Footer idéntico a PantallaPrincipal */}
+                    <View style={styles.footer}>
+                        <View style={styles.footerLeft}>
+                            <TouchableOpacity onPress={() => console.log('Términos y condiciones')}>
+                                <Text style={styles.footerText}>Términos y condiciones</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => console.log('Privacidad')}>
+                                <Text style={styles.footerText}>Privacidad</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.footerRight}>
+                            <Text style={[styles.footerText, styles.footerTitle]}>Contáctanos</Text>
+                            <Text style={styles.footerText}>Col. Horacio Camargo</Text>
+                            <Text style={styles.footerText}>segurix@mail.com</Text>
+                            <Text style={styles.footerText}>+52 774 545 8510</Text>
+                            <Text style={[styles.footerText, styles.footerTitle]}>Redes sociales</Text>
+                            <View style={styles.socialIcons}>
+                                <TouchableOpacity onPress={() => console.log('Instagram')}>
+                                    <Entypo
+                                        name="instagram-with-circle"
+                                        size={28}
+                                        color="#1E1E1E"
+                                        style={styles.socialIcon}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => console.log('Facebook')}>
+                                    <Entypo
+                                        name="facebook-with-circle"
+                                        size={28}
+                                        color="#1E1E1E"
+                                        style={styles.socialIcon}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
     );
 }
 
+// Estilos combinados y actualizados
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
-    },
-    scrollContent: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: '#CFE2FF',
     },
     cardContainer: {
-        width: '90%',
-        backgroundColor: '#fff',
-        borderRadius: 10,
+        margin: 20,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 15,
         padding: 20,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        marginVertical: 20,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        elevation: 6,
     },
     topBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E0E0E0',
+        paddingBottom: 10,
     },
     logo: {
         fontSize: 24,
         fontWeight: 'bold',
+        color: '#1E1E1E',
+    },
+    nav: {
+        flexDirection: 'row',
+    },
+    navText: {
+        fontSize: 16,
+        color: '#1E1E1E',
+        marginLeft: 20,
     },
     title: {
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: 'bold',
-        marginBottom: 20,
+        color: '#1E1E1E',
+        marginVertical: 15,
         textAlign: 'center',
     },
     productCard: {
@@ -166,5 +252,36 @@ const styles = StyleSheet.create({
     },
     listContent: {
         width: '100%',
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20,
+        borderTopWidth: 1,
+        borderTopColor: '#E0E0E0',
+        paddingTop: 10,
+    },
+    footerLeft: {
+        flex: 1,
+    },
+    footerRight: {
+        flex: 1,
+        alignItems: 'flex-end',
+    },
+    footerText: {
+        fontSize: 14,
+        color: '#1E1E1E',
+        marginBottom: 4,
+    },
+    footerTitle: {
+        fontWeight: 'bold',
+        marginTop: 8,
+    },
+    socialIcons: {
+        flexDirection: 'row',
+        marginTop: 8,
+    },
+    socialIcon: {
+        marginRight: 15,
     },
 });
