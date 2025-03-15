@@ -27,7 +27,7 @@ import {
                     <Text style={styles.navText}>Empresa</Text>
                 </TouchableOpacity>
                 {/* Ajuste mínimo: navegar a /productCatalog */}
-                <TouchableOpacity onPress={() => router.push('/productCatalog')}>
+                <TouchableOpacity onPress={() => router.push('/CatalogoProductosScreen')}>
                     <Text style={styles.navText}>Productos</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/huella')}>
