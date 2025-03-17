@@ -1,4 +1,3 @@
-// app/valores.tsx
 import React, { useState, useEffect } from 'react';
 import {
     SafeAreaView,
@@ -15,22 +14,23 @@ import { Entypo } from '@expo/vector-icons';
 export default function ValoresScreen() {
     const router = useRouter();
     const API_BASE = 'http://localhost:8082/api'; // Ajusta tu URL según sea necesario
-    const [valores, setValores] = useState('');
+    const [valor, setValor] = useState(''); // Usamos una variable para almacenar solo el último valor
 
-    // useEffect para cargar los datos de los valores desde el backend
+    // useEffect para cargar el último valor desde el backend
     useEffect(() => {
-        const fetchValores = async () => {
+        const fetchValor = async () => {
             try {
                 const response = await axios.get(`${API_BASE}/empresa/valores`);
-                // Asumiendo que la base de datos contiene múltiples valores, tomamos el primero
-                const data = response.data as { contenido: string }[];
-                setValores(data[0]?.contenido || 'No hay valores definidos.');
+                // Suponiendo que los valores están ordenados por la fecha de creación y tomamos el último
+                const data = response.data as { contenido: string }[]; // Aseguramos el tipo de los datos
+                const lastValue = data[data.length - 1]; // Toma el último valor
+                setValor(lastValue?.contenido || 'No hay valores definidos.');
             } catch (error) {
-                console.error("Error fetching valores:", error);
-                setValores('Error al obtener valores.');
+                console.error("Error fetching valor:", error);
+                setValor('Error al obtener valor.');
             }
         };
-        fetchValores();
+        fetchValor();
     }, []);
 
     return (
@@ -54,10 +54,10 @@ export default function ValoresScreen() {
                         />
                     </View>
 
-                    {/* Contenido principal: Valores */}
+                    {/* Contenido principal: Valor */}
                     <View style={styles.mainContent}>
-                        <Text style={styles.title}>Valores</Text>
-                        <Text style={styles.parrafo}>{valores}</Text>
+                        <Text style={styles.title}>Último Valor</Text>
+                        <Text style={styles.parrafo}>{valor}</Text>
                     </View>
 
                     {/* Footer */}

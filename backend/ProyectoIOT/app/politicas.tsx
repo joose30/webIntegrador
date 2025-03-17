@@ -15,22 +15,22 @@ import { Entypo } from '@expo/vector-icons';
 export default function PoliticasScreen() {
     const router = useRouter();
     const API_BASE = 'http://localhost:8082/api'; // Ajusta tu URL según sea necesario
-    const [politicas, setPoliticas] = useState('');
+    const [politica, setPolitica] = useState('');
 
-    // useEffect para cargar los datos de las políticas desde el backend
+    // useEffect para cargar la última política desde el backend
     useEffect(() => {
-        const fetchPoliticas = async () => {
+        const fetchPolitica = async () => {
             try {
                 const response = await axios.get(`${API_BASE}/empresa/politicas`);
-                // Asumiendo que la base de datos contiene múltiples políticas, tomamos la primera
                 const data = response.data as { descripcion: string }[];
-                setPoliticas(data[0]?.descripcion || 'No hay políticas definidas.');
+                const lastPolitica = data[data.length - 1]; // Toma la última política
+                setPolitica(lastPolitica?.descripcion || 'No hay políticas definidas.');
             } catch (error) {
-                console.error("Error fetching politicas:", error);
-                setPoliticas('Error al obtener políticas.');
+                console.error("Error fetching política:", error);
+                setPolitica('Error al obtener política.');
             }
         };
-        fetchPoliticas();
+        fetchPolitica();
     }, []);
 
     return (
@@ -56,8 +56,8 @@ export default function PoliticasScreen() {
 
                     {/* Contenido principal: Políticas */}
                     <View style={styles.mainContent}>
-                        <Text style={styles.title}>Políticas</Text>
-                        <Text style={styles.parrafo}>{politicas}</Text>
+                        <Text style={styles.title}>Última Política</Text>
+                        <Text style={styles.parrafo}>{politica}</Text>
                     </View>
 
                     {/* Footer */}

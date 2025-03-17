@@ -22,9 +22,10 @@ export default function VisionScreen() {
         const fetchVision = async () => {
             try {
                 const response = await axios.get(`${API_BASE}/empresa/visiones`);
-                // Asumiendo que la base de datos contiene múltiples visiones, tomamos la primera
+                // Suponiendo que los valores están ordenados por fecha de creación en la base de datos
                 const data = response.data as { contenido: string }[];
-                setVision(data[0]?.contenido || 'No hay visión definida.');
+                const lastVision = data[data.length - 1]; // Tomamos el último elemento
+                setVision(lastVision?.contenido || 'No hay visión definida.');
             } catch (error) {
                 console.error("Error fetching vision:", error);
                 setVision('Error al obtener visión.');
@@ -48,7 +49,7 @@ export default function VisionScreen() {
                     {/* Sección Hero (Imagen) */}
                     <View style={styles.heroSection}>
                         <Image
-                            source={require('../assets/images/puertaIOT-vision.jpg')}
+                            source={require('../assets/images/puertaIOT-vision.jpg')} // Ajusta la ruta o usa otra imagen
                             style={styles.heroImage}
                             resizeMode="contain"
                         />
@@ -56,7 +57,7 @@ export default function VisionScreen() {
 
                     {/* Contenido principal: Visión */}
                     <View style={styles.mainContent}>
-                        <Text style={styles.title}>Visión</Text>
+                        <Text style={styles.title}>Última Visión</Text>
                         <Text style={styles.parrafo}>{vision}</Text>
                     </View>
 
