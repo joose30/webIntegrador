@@ -70,7 +70,7 @@ export default function PantallaDatosEmpresa() {
             // Actualiza los datos de la empresa
             await axios.put(`${API_BASE}/empresa/actualizar`, formData.empresa);
 
-            // Crea los demás elementos (pregunta, misión, visión, valores y políticas)
+            // Crea o actualiza los demás elementos (pregunta, misión, visión, valores y políticas)
             await Promise.all([
                 formData.pregunta.pregunta && axios.post(`${API_BASE}/empresa/preguntas`, formData.pregunta),
                 formData.mision && axios.post(`${API_BASE}/empresa/misiones`, { contenido: formData.mision }),
@@ -79,7 +79,7 @@ export default function PantallaDatosEmpresa() {
                 formData.politica && axios.post(`${API_BASE}/empresa/politicas`, { descripcion: formData.politica })
             ]);
 
-            router.back();
+            router.push('/AggDatosEmp'); // Redirige a la pantalla de configuración
         } catch (error) {
             console.error('Error guardando datos:', error);
         }

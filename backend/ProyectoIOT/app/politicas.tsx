@@ -1,83 +1,83 @@
-// app/mision.tsx
-import React from 'react';
+// app/politicas.tsx
+import React, { useState, useEffect } from 'react';
 import {
     SafeAreaView,
     ScrollView,
     View,
     Text,
     Image,
-    TouchableOpacity,
     StyleSheet
-    } from 'react-native';
-    import { useRouter } from 'expo-router';
-    import { Entypo } from '@expo/vector-icons';
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import axios from 'axios';
+import { Entypo } from '@expo/vector-icons';
 
-    export default function MisionScreen() {
+export default function PoliticasScreen() {
     const router = useRouter();
+    const API_BASE = 'http://localhost:8082/api'; // Ajusta tu URL según sea necesario
+    const [politicas, setPoliticas] = useState('');
+
+    // useEffect para cargar los datos de las políticas desde el backend
+    useEffect(() => {
+        const fetchPoliticas = async () => {
+            try {
+                const response = await axios.get(`${API_BASE}/empresa/politicas`);
+                // Asumiendo que la base de datos contiene múltiples políticas, tomamos la primera
+                const data = response.data as { descripcion: string }[];
+                setPoliticas(data[0]?.descripcion || 'No hay políticas definidas.');
+            } catch (error) {
+                console.error("Error fetching politicas:", error);
+                setPoliticas('Error al obtener políticas.');
+            }
+        };
+        fetchPoliticas();
+    }, []);
 
     return (
         <SafeAreaView style={styles.screen}>
-        <ScrollView style={{ flex: 1 }}>
-            
-            {/* Tarjeta principal */}
-            <View style={styles.cardContainer}>
+            <ScrollView style={{ flex: 1 }}>
+                <View style={styles.cardContainer}>
+                    {/* Barra Superior */}
+                    <View style={styles.topBar}>
+                        <Text style={styles.logo}>Segurix</Text>
+                        <View style={styles.nav}>
+                            <Text style={styles.navText} onPress={() => router.push('/CatalogoProductosScreen')}>Ver productos</Text>
+                        </View>
+                    </View>
 
-            {/* Barra Superior */}
-            <View style={styles.topBar}>
-                <Text style={styles.logo}>Segurix</Text>
-                <View style={styles.nav}>
-                <TouchableOpacity onPress={() => console.log('Ver productos')}>
-                    <Text style={styles.navText}>Ver productos</Text>
-                </TouchableOpacity>
+                    {/* Sección Hero (Imagen) */}
+                    <View style={styles.heroSection}>
+                        <Image
+                            source={require('../assets/images/puertaIOT-politicas.png')} // Ajusta la ruta o usa otra imagen
+                            style={styles.heroImage}
+                            resizeMode="contain"
+                        />
+                    </View>
+
+                    {/* Contenido principal: Políticas */}
+                    <View style={styles.mainContent}>
+                        <Text style={styles.title}>Políticas</Text>
+                        <Text style={styles.parrafo}>{politicas}</Text>
+                    </View>
+
+                    {/* Footer */}
+                    <View style={styles.footer}>
+                        <View style={styles.footerLeft}>
+                            <Text style={styles.footerText}>Términos y condiciones</Text>
+                            <Text style={styles.footerText}>Privacidad</Text>
+                        </View>
+                        <View style={styles.footerRight}>
+                            <Entypo name="instagram-with-circle" size={24} color="#1E1E1E" style={styles.icon} />
+                            <Entypo name="facebook-with-circle" size={24} color="#1E1E1E" style={styles.icon} />
+                        </View>
+                    </View>
                 </View>
-            </View>
-
-            {/* Sección Hero (opcional) */}
-            <View style={styles.heroSection}>
-                <Image
-                source={require('../assets/images/puertaIOT-politicas.png')} // Ajusta la ruta o usa otra imagen
-                style={styles.heroImage}
-                resizeMode="contain"
-                />
-            </View>
-
-            {/* Contenido principal: Misión */}
-            <View style={styles.mainContent}>
-                <Text style={styles.title}>Politicas</Text>
-                <Text style={styles.parrafo}>
-                Nuestra misión es brindar soluciones IoT de alta calidad que permitan a
-                nuestros clientes asegurar y controlar sus dispositivos de forma confiable.
-                </Text>
-            </View>
-
-            {/* Footer */}
-            <View style={styles.footer}>
-                <View style={styles.footerLeft}>
-                <TouchableOpacity onPress={() => console.log('Términos y condiciones')}>
-                    <Text style={styles.footerText}>Términos y condiciones</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => console.log('Privacidad')}>
-                    <Text style={styles.footerText}>Privacidad</Text>
-                </TouchableOpacity>
-                </View>
-                <View style={styles.footerRight}>
-                <TouchableOpacity onPress={() => console.log('Instagram')}>
-                    <Entypo name="instagram-with-circle" size={24} color="#1E1E1E" style={styles.icon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => console.log('Facebook')}>
-                    <Entypo name="facebook-with-circle" size={24} color="#1E1E1E" style={styles.icon} />
-                </TouchableOpacity>
-                </View>
-            </View>
-
-            </View>
-        </ScrollView>
+            </ScrollView>
         </SafeAreaView>
     );
-    }
+}
 
-    const styles = StyleSheet.create({
-    /* Fondo azul suave */
+const styles = StyleSheet.create({
     screen: {
         flex: 1,
         backgroundColor: '#CFE2FF',
@@ -87,15 +87,12 @@ import {
         backgroundColor: '#FFFFFF',
         borderRadius: 15,
         padding: 20,
-        // Sombra en iOS
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 5,
-        // Sombra en Android
         elevation: 6,
     },
-    /* Barra Superior */
     topBar: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -118,7 +115,6 @@ import {
         color: '#1E1E1E',
         marginLeft: 20,
     },
-    /* Hero */
     heroSection: {
         marginTop: 10,
         alignItems: 'center',
@@ -128,7 +124,6 @@ import {
         height: 200,
         borderRadius: 10,
     },
-    /* Contenido principal */
     mainContent: {
         marginTop: 20,
     },
@@ -146,7 +141,6 @@ import {
         textAlign: 'center',
         marginBottom: 20,
     },
-    /* Footer */
     footer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
