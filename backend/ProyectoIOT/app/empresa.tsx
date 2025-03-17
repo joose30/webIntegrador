@@ -44,7 +44,7 @@ export default function EmpresaScreen() {
                 <View style={styles.cardContainer}>
                     {/* Barra Superior */}
                     <View style={styles.topBar}>
-                        <Text style={styles.logo}>Segurix</Text>
+                        <Text style={styles.logo} onPress={() => router.push('/')}>Segurix</Text>
                         <View style={styles.nav}>
                             <TouchableOpacity onPress={() => console.log('Ver productos')}>
                                 <Text style={styles.navText}>Ver productos</Text>
