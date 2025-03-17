@@ -27,7 +27,7 @@ import {
                     <Text style={styles.navText}>Empresa</Text>
                 </TouchableOpacity>
                 {/* Ajuste mínimo: navegar a /productCatalog */}
-                <TouchableOpacity onPress={() => router.push('/productCatalog')}>
+                <TouchableOpacity onPress={() => router.push('/CatalogoProductosScreen')}>
                     <Text style={styles.navText}>Productos</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/huella')}>
@@ -42,7 +42,12 @@ import {
                 <TouchableOpacity onPress={() => router.push('/perfil')}>
                     <Text style={styles.navText}>Perfil</Text>
                 </TouchableOpacity>
-
+                <TouchableOpacity onPress={() => router.push('/Aggprod' as any)}>
+                    <Text style={styles.navText}>Admin(agg prod)</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/AggDatosEmp' as any)}>
+                    <Text style={styles.navText}>Admin(datos empresa)</Text>
+                </TouchableOpacity>
 
                 </View>
             </View>
