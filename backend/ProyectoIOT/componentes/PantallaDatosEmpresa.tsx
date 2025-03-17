@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     SafeAreaView,
     ScrollView,
@@ -13,6 +13,9 @@ import { useRouter } from 'expo-router';
 
 export default function PantallaDatosEmpresa() {
     const router = useRouter();
+    const API_BASE = 'http://localhost:8082/api';
+
+    // Estado para almacenar los datos del formulario
     const [formData, setFormData] = useState({
         empresa: { ubicacion: '', telefono: '' },
         pregunta: { pregunta: '', respuesta: '' },
@@ -22,13 +25,52 @@ export default function PantallaDatosEmpresa() {
         politica: ''
     });
 
+    // Estados para almacenar los datos listados desde la base de datos
+    const [empresaData, setEmpresaData] = useState<any>(null);
+    const [preguntasList, setPreguntasList] = useState<any[]>([]);
+    const [misionsList, setMisionsList] = useState<any[]>([]);
+    const [visionsList, setVisionsList] = useState<any[]>([]);
+    const [valoresList, setValoresList] = useState<any[]>([]);
+    const [politicasList, setPoliticasList] = useState<any[]>([]);
+
+    // useEffect para obtener los datos al montar el componente
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [
+                    empresaRes,
+                    preguntasRes,
+                    misionesRes,
+                    visionesRes,
+                    valoresRes,
+                    politicasRes
+                ] = await Promise.all([
+                    axios.get<any>(`${API_BASE}/empresa`),
+                    axios.get<any[]>(`${API_BASE}/empresa/preguntas`),
+                    axios.get<any[]>(`${API_BASE}/empresa/misiones`),
+                    axios.get<any[]>(`${API_BASE}/empresa/visiones`),
+                    axios.get<any[]>(`${API_BASE}/empresa/valores`),
+                    axios.get<any[]>(`${API_BASE}/empresa/politicas`)
+                ]);
+                setEmpresaData(empresaRes.data);
+                setPreguntasList(preguntasRes.data);
+                setMisionsList(misionesRes.data);
+                setVisionsList(visionesRes.data);
+                setValoresList(valoresRes.data);
+                setPoliticasList(politicasRes.data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchData();
+    }, []);
+
     const handleSubmit = async () => {
         try {
-            const API_BASE = 'http://localhost:8082/api';
-            // Actualizar empresa (cambiando 'update' por 'actualizar')
+            // Actualiza los datos de la empresa
             await axios.put(`${API_BASE}/empresa/actualizar`, formData.empresa);
 
-            // Crear elementos (las demás rutas están correctas)
+            // Crea los demás elementos (pregunta, misión, visión, valores y políticas)
             await Promise.all([
                 formData.pregunta.pregunta && axios.post(`${API_BASE}/empresa/preguntas`, formData.pregunta),
                 formData.mision && axios.post(`${API_BASE}/empresa/misiones`, { contenido: formData.mision }),
@@ -40,13 +82,8 @@ export default function PantallaDatosEmpresa() {
             router.back();
         } catch (error) {
             console.error('Error guardando datos:', error);
-            // Agregar un mejor manejo de errores
-            // if (axios.isAxiosError(error)) {
-            //     console.error('Error de respuesta:', error.response?.data);
-            // }
         }
     };
-
 
     return (
         <SafeAreaView style={styles.screen}>
@@ -77,6 +114,14 @@ export default function PantallaDatosEmpresa() {
                             keyboardType="phone-pad"
                         />
                     </View>
+                    {/* Listado de Datos de la Empresa */}
+                    {empresaData && (
+                        <View style={styles.listContainer}>
+                            <Text style={styles.listTitle}>Datos de la Empresa:</Text>
+                            <Text>Ubicación: {empresaData.ubicacion}</Text>
+                            <Text>Teléfono: {empresaData.telefono}</Text>
+                        </View>
+                    )}
 
                     {/* Sección Preguntas Frecuentes */}
                     <View style={styles.section}>
@@ -100,6 +145,18 @@ export default function PantallaDatosEmpresa() {
                             style={styles.input}
                         />
                     </View>
+                    {/* Listado de Preguntas Frecuentes */}
+                    {preguntasList.length > 0 && (
+                        <View style={styles.listContainer}>
+                            <Text style={styles.listTitle}>Preguntas Frecuentes:</Text>
+                            {preguntasList.map(item => (
+                                <View key={item._id} style={styles.listItem}>
+                                    <Text>Pregunta: {item.pregunta}</Text>
+                                    <Text>Respuesta: {item.respuesta}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
 
                     {/* Sección Misión */}
                     <View style={styles.section}>
@@ -115,6 +172,17 @@ export default function PantallaDatosEmpresa() {
                             multiline
                         />
                     </View>
+                    {/* Listado de Misiones */}
+                    {misionsList.length > 0 && (
+                        <View style={styles.listContainer}>
+                            <Text style={styles.listTitle}>Misiones:</Text>
+                            {misionsList.map(item => (
+                                <View key={item._id} style={styles.listItem}>
+                                    <Text>{item.contenido}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
 
                     {/* Sección Visión */}
                     <View style={styles.section}>
@@ -130,6 +198,17 @@ export default function PantallaDatosEmpresa() {
                             multiline
                         />
                     </View>
+                    {/* Listado de Visiones */}
+                    {visionsList.length > 0 && (
+                        <View style={styles.listContainer}>
+                            <Text style={styles.listTitle}>Visiones:</Text>
+                            {visionsList.map(item => (
+                                <View key={item._id} style={styles.listItem}>
+                                    <Text>{item.contenido}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
 
                     {/* Sección Valores */}
                     <View style={styles.section}>
@@ -145,6 +224,17 @@ export default function PantallaDatosEmpresa() {
                             multiline
                         />
                     </View>
+                    {/* Listado de Valores */}
+                    {valoresList.length > 0 && (
+                        <View style={styles.listContainer}>
+                            <Text style={styles.listTitle}>Valores:</Text>
+                            {valoresList.map(item => (
+                                <View key={item._id} style={styles.listItem}>
+                                    <Text>{item.contenido}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
 
                     {/* Sección Políticas */}
                     <View style={styles.section}>
@@ -160,6 +250,17 @@ export default function PantallaDatosEmpresa() {
                             multiline
                         />
                     </View>
+                    {/* Listado de Políticas */}
+                    {politicasList.length > 0 && (
+                        <View style={styles.listContainer}>
+                            <Text style={styles.listTitle}>Políticas:</Text>
+                            {politicasList.map(item => (
+                                <View key={item._id} style={styles.listItem}>
+                                    <Text>{item.descripcion}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    )}
 
                     <TouchableOpacity onPress={handleSubmit} style={styles.button}>
                         <Text style={styles.buttonText}>Guardar Cambios</Text>
@@ -231,5 +332,19 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
+    },
+    listContainer: {
+        marginTop: 10,
+        padding: 10,
+        backgroundColor: '#e9ecef',
+        borderRadius: 5,
+    },
+    listTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    listItem: {
+        marginBottom: 5,
     },
 });
