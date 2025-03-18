@@ -68,7 +68,7 @@ export default function PantallaDatosEmpresa() {
     const handleSubmit = async () => {
         try {
             // Actualiza los datos de la empresa
-            await axios.put(`${API_BASE}/empresa/actualizar`, formData.empresa);
+            await axios.put(`${API_BASE}/empresa/actualizar-todos`, formData.empresa);
 
             // Crea o actualiza los demás elementos (pregunta, misión, visión, valores y políticas)
             await Promise.all([
