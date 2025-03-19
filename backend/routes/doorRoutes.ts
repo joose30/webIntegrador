@@ -2,7 +2,7 @@ import express from 'express';
 import axios from 'axios';
 
 const router = express.Router();
-const ESP32_IP = 'http://192.168.111.29';  // Cambia la IP de tu ESP32
+const ESP32_IP = 'http://192.168.0.85';  // Cambia la IP de tu ESP32
 
 // Ruta para abrir la puerta
 router.get('/abrir', async (req, res) => {

@@ -48,7 +48,9 @@ import {
                 <TouchableOpacity onPress={() => router.push('/AggDatosEmp' as any)}>
                     <Text style={styles.navText}>Admin(datos empresa)</Text>
                 </TouchableOpacity>
-
+                <TouchableOpacity onPress={() => router.push('/registroDispositivo' as any)}>
+                    <Text style={styles.navText}>Alta del dispositivo</Text>
+                </TouchableOpacity>
                 </View>
             </View>
 

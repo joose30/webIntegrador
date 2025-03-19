@@ -8,6 +8,7 @@ import huellaRoutes from './routes/huellaRoutes';
 import doorRoutes from './routes/doorRoutes';  
 import productRoutes from './routes/productRoutes'; // Import product routes
 import empresaRoutes from './routes/empresaRoutes';
+import deviceRoutes from './routes/deviceRoutes';  // Importamos las rutas del dispositivo
 
 const app = express();
 const PORT = process.env.PORT || 8082;
@@ -46,6 +47,7 @@ app.use('/api/door', doorRoutes);  // Rutas para el control de la puerta
 app.use('/api/huella', huellaRoutes);  // Rutas para el control de huellas
 app.use('/api/products', productRoutes); // Rutas para el control de productos
 app.use('/api', empresaRoutes); // Rutas para el control de los datos de la empresa
+app.use('/api/devices', deviceRoutes); // Ruta para los dispositivos IoT
 
 // Iniciar servidor
 app.listen(PORT, () => {
