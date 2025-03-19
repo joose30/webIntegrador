@@ -10,8 +10,8 @@
 #include <WebServer.h> // Biblioteca para el servidor web
 
 // Configuración del WiFi
-const char* ssid = "UTHH-Alumnos"; // Cambia esto por tu SSID
-const char* password = ""; // Cambia esto por tu contraseña
+const char* ssid = "INFINITUM26F6_2.4"; // Cambia esto por tu SSID
+const char* password = "25XM2pGRPU"; // Cambia esto por tu contraseña
 
 // Configuración del servidor web
 WebServer server(80);
@@ -29,8 +29,8 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 const byte FILAS = 4;
 const byte COLUMNAS = 4;
 char teclas[FILAS][COLUMNAS] = {
-  {'1','2','3','A'},
-  {'4','5','6','B'},
+  {'1','5','2','A'},
+  {'3','4','6','B'},
   {'7','8','9','C'},
   {'*','0','#','D'}
 };
@@ -40,7 +40,7 @@ byte pinesColumnas[COLUMNAS] = {27, 26, 5, 33};
 Keypad teclado = Keypad(makeKeymap(teclas), pinesFilas, pinesColumnas, FILAS, COLUMNAS);
 
 // Configuración de contraseña
-const char claveCorrecta[5] = "1234";
+const char claveCorrecta[5] = "1750";
 char claveIngresada[5];
 int indiceClave = 0;
 bool estaBloqueado = true;
@@ -124,7 +124,6 @@ void setup() {
   // Configurar rutas del servidor web
   server.on("/leerRFID", handleLeerRFID); // Ruta para leer el RFID
   server.on("/controlPuerta", handleControlPuerta); // Ruta para controlar la puerta
-  server.on("/registrarHuella", handleRegistrarHuella);
 
   // Iniciar servidor
   server.begin();
@@ -132,43 +131,6 @@ void setup() {
 
   mostrarMenuPrincipal();
 }
-
-void handleRegistrarHuella() {
-  // Verificar si hay espacio disponible
-  uint8_t count = 0;
-  finger.getTemplateCount(&count);
-  
-  if (count >= 127) {
-    server.send(500, "text/plain", "Error: Memoria de huellas llena");
-    return;
-  }
-
-  // Configurar timeout
-  unsigned long startTime = millis();
-  const unsigned long TIMEOUT = 30000; // 30 segundos de timeout
-  
-  int id = -1;
-  
-  // Intentar capturar la huella con timeout
-  while (millis() - startTime < TIMEOUT) {
-    id = capturarHuella();
-    if (id > 0) {
-      String response = "Huella registrada con ID: " + String(id);
-      server.send(200, "text/plain", response);
-      return;
-    } else if (id == -1) {
-      // Error específico durante la captura
-      server.send(500, "text/plain", "Error durante la captura de huella");
-      return;
-    }
-    // Pequeña pausa para no saturar el procesador
-    delay(100);
-  }
-  
-  // Si llegamos aquí, hubo timeout
-  server.send(408, "text/plain", "Tiempo de espera agotado");
-}
-
 
 void handleLeerRFID() {
   // Agregar encabezados CORS
@@ -249,10 +211,18 @@ void actualizarClave() {
 }
 
 void verificarRFID() {
+  // Reinicializar el módulo RFID
+  mfrc522.PCD_Init();
+  delay(50); // Pequeña pausa para estabilización
+  
   // Verifica si hay una tarjeta cerca
   if (!mfrc522.PICC_IsNewCardPresent()) {
     return;
   }
+  
+  // Espera un momento para asegurarse de que la tarjeta esté estable
+  delay(50);
+  
   // Intenta leer la tarjeta
   if (!mfrc522.PICC_ReadCardSerial()) {
     return;
@@ -266,23 +236,27 @@ void verificarRFID() {
     Serial.print(mfrc522.uid.uidByte[i], HEX);
     tagID += String(mfrc522.uid.uidByte[i], HEX);
   }
-  Serial.println(); // Nueva línea en la salida serial
+  Serial.println();
 
   // Conceder acceso si se detecta una tarjeta válida
   lcd.clear();
   lcd.print("Acceso Concedido");
   pitidoExito();
-  digitalWrite(RELAY_PIN, LOW); // Desbloquear la puerta
-  delay(5000);                  // Mantener la puerta abierta por 5 segundos
-  digitalWrite(RELAY_PIN, HIGH); // Bloquear la puerta nuevamente
+  digitalWrite(RELAY_PIN, LOW);
+  delay(5000);
+  digitalWrite(RELAY_PIN, HIGH);
 
-  // Volvemos a "bloquear" lógicamente, igual que cuando se ingresa el PIN
+  // Volvemos a "bloquear" lógicamente
   estaBloqueado = true;
   intentosFallidos = 0;
 
-  // Finalizar la comunicación con la tarjeta
+  // Finalizar correctamente la comunicación con la tarjeta
   mfrc522.PICC_HaltA();
   mfrc522.PCD_StopCrypto1();
+  
+  // Asegurarnos de que el módulo esté listo para la siguiente lectura
+  mfrc522.PCD_Reset();
+  mfrc522.PCD_Init();
 
   // Regresamos al menú principal
   mostrarMenuPrincipal();
