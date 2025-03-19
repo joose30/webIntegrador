@@ -325,6 +325,24 @@ void verificarSensorPIR() {
         digitalWrite(pinBuzzer, HIGH);
         alarmaActivada = true;
         Serial.println("Alarma activada");
+    
+        // Enviar datos al servidor
+        if(WiFi.status() == WL_CONNECTED) {
+        HTTPClient http;
+        http.begin("http://localhost:8082/api/registros/add");
+        http.addHeader("Content-Type", "application/json");
+        
+        String jsonData = "{\"mensaje\":\"Alerta\",\"descripcion\":\"Detección sospechosa\"}";
+        int httpResponseCode = http.POST(jsonData);
+        
+        if(httpResponseCode > 0) {
+            String response = http.getString();
+            Serial.println("Registro enviado exitosamente");
+        } else {
+            Serial.println("Error enviando registro");
+        }
+        http.end();
+    }
       }
     }
   } else {
