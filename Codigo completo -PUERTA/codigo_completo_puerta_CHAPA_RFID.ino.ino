@@ -8,6 +8,7 @@
 #include <MFRC522.h>
 #include <WiFi.h> // Biblioteca para WiFi
 #include <WebServer.h> // Biblioteca para el servidor web
+#include <HTTPClient.h>
 
 // Configuración del WiFi
 const char* ssid = "INFINITUM26F6_2.4"; // Cambia esto por tu SSID
@@ -325,24 +326,35 @@ void verificarSensorPIR() {
         digitalWrite(pinBuzzer, HIGH);
         alarmaActivada = true;
         Serial.println("Alarma activada");
-    
         // Enviar datos al servidor
         if(WiFi.status() == WL_CONNECTED) {
-        HTTPClient http;
-        http.begin("http://localhost:8082/api/registros/add");
-        http.addHeader("Content-Type", "application/json");
-        
-        String jsonData = "{\"mensaje\":\"Alerta\",\"descripcion\":\"Detección sospechosa\"}";
-        int httpResponseCode = http.POST(jsonData);
-        
-        if(httpResponseCode > 0) {
+          HTTPClient http;
+          
+          // URL correcta
+          String serverUrl = "http://192.168.0.81:8082/api/registros/add"; //IP DE IPCONFIG
+          Serial.println("Intentando conectar a: " + serverUrl);
+          
+          http.begin(serverUrl);
+          http.addHeader("Content-Type", "application/json");
+          
+          String jsonData = "{\"mensaje\":\"Alerta\",\"descripcion\":\"Detección sospechosa\"}";
+          Serial.println("Enviando datos: " + jsonData);
+          
+          int httpResponseCode = http.POST(jsonData);
+          
+          if(httpResponseCode > 0) {
             String response = http.getString();
+            Serial.println("Código de respuesta HTTP: " + String(httpResponseCode));
+            Serial.println("Respuesta del servidor: " + response);
             Serial.println("Registro enviado exitosamente");
+          } else {
+            Serial.println("Error en la petición HTTP. Código: " + String(httpResponseCode));
+            Serial.println("Error: " + http.errorToString(httpResponseCode));
+          }
+          http.end();
         } else {
-            Serial.println("Error enviando registro");
-        }
-        http.end();
-    }
+          Serial.println("Error: No hay conexión WiFi");
+        }        
       }
     }
   } else {
