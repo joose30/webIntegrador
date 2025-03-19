@@ -7,7 +7,7 @@ const PasswordForm = () => {
         e.preventDefault();
 
         try {
-        const response = await fetch('http://localhost:8082/api/passwords/register', {
+        const response = await fetch('http://192.168.8.6:8082/api/passwords/register', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',

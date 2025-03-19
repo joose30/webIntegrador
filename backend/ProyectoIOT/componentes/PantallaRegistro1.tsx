@@ -25,7 +25,7 @@ export default function PantallaRegistro1({ onNext }: Props) {
 
     const handleNext = async () => {
         try {
-            const response = await axios.post('http://localhost:8082/api/users/register', {
+            const response = await axios.post('http://192.168.8.6:8082/api/users/register', {
                 name,
                 lastName,
                 surname,

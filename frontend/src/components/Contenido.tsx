@@ -8,7 +8,7 @@ const Contenido = () => {
   const registerFingerprint = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8082/api/fingerprints/register",
+        "http://192.168.8.6:8082/api/fingerprints/register",
         {
           method: "POST",
           headers: {
@@ -27,7 +27,7 @@ const Contenido = () => {
   const listFingerprints = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8082/api/fingerprints/list"
+        "http://192.168.8.6:8082/api/fingerprints/list"
       );
       const data = await response.json();
       setFingerprints(data);

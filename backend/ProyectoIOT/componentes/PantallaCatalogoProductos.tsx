@@ -31,7 +31,7 @@ export default function PantallaCatalogoProductos() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8082/api/products/get');
+                const response = await axios.get('http://192.168.8.6:8082/api/products/get');
                 if (response.status === 200) {
                     setProducts(response.data as Product[]);
                 }
