@@ -1,4 +1,3 @@
-// components/ProductCard.tsx
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
 
@@ -7,33 +6,32 @@ type Product = {
     name: string;
     image: string;
     price: number;
-    };
+};
 
-    type Props = {
+type Props = {
     product: Product;
     onPress: () => void;
-    };
+};
 
-    export default function ProductCard({ product, onPress }: Props) {
+export default function ProductCard({ product, onPress }: Props) {
     return (
         <TouchableOpacity style={styles.card} onPress={onPress}>
-        <Image source={{ uri: product.image }} style={styles.image} />
-        <View style={styles.info}>
-            <Text style={styles.name}>{product.name}</Text>
-            <Text style={styles.price}>${product.price}</Text>
-        </View>
+            <Image source={{ uri: product.image }} style={styles.image} />
+            <View style={styles.info}>
+                <Text style={styles.name}>{product.name}</Text>
+                <Text style={styles.price}>${product.price}</Text>
+            </View>
         </TouchableOpacity>
     );
-    }
+}
 
-    const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
         backgroundColor: '#FFF',
         marginBottom: 10,
         borderRadius: 10,
         padding: 10,
-        // Sombra opcional
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,

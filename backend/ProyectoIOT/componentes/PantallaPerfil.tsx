@@ -21,7 +21,7 @@ export default function PantallaPerfil({ userId }: Props) {
 
     const fetchUserData = async () => {
         try {
-            const response = await axios.get(`http://192.168.8.6:8082/api/users/${userId}`);
+            const response = await axios.get(`http://192.168.8.6:8082/api/users/${userId}`); //(IPCONFIG)
             const user:any  = response.data;
             setName(user.name);
             setLastName(user.lastName);
@@ -47,7 +47,7 @@ export default function PantallaPerfil({ userId }: Props) {
         }
 
         try {
-            const response = await axios.put(`http://192.168.8.6:8082/api/users/update/${userId}`, updateData);
+            const response = await axios.put(`http://192.168.8.6:8082/api/users/update/${userId}`, updateData); //(IPCONFIG)
             if (response.status === 200) {
                 Alert.alert('Éxito', 'Datos actualizados correctamente');
                 setPassword('');

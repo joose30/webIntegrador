@@ -7,17 +7,18 @@ export default function PantallaAgregarProducto() {
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [category, setCategory] = useState('');
+    const [image, setImage] = useState('');
 
     const handleAddProduct = async () => {
         try {
-            const response = await axios.post('http://192.168.8.6:8082/api/products/add', {
+            const response = await axios.post('http://192.168.8.6:8082/api/products/add', { //(IPCONFIG)
                 name,
                 description,
                 price,
                 category,
+                image,
             });
             if (response.status === 201) {
-                // Producto agregado exitosamente
                 console.log('Producto agregado:', response.data);
             }
         } catch (error) {
@@ -61,6 +62,13 @@ export default function PantallaAgregarProducto() {
                             placeholder="Ingresa la categoría del producto"
                             value={category}
                             onChangeText={setCategory}
+                        />
+                        <Text style={styles.label}>Imagen (URL)</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Ingresa la URL de la imagen"
+                            value={image}
+                            onChangeText={setImage}
                         />
                         <TouchableOpacity style={styles.button} onPress={handleAddProduct}>
                             <Text style={styles.buttonText}>Agregar Producto</Text>

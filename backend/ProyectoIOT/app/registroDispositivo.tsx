@@ -18,7 +18,7 @@ export default function PantallaRegistroDispositivo() {
 
     const handleRegisterDevice = async () => {
         try {
-            const response = await axios.post('http://192.168.8.6:8082/api/devices/register', {
+            const response = await axios.post('http://192.168.8.6:8082/api/devices/register', { //(IPCONFIG)
                 macAddress,
                 name,
                 location

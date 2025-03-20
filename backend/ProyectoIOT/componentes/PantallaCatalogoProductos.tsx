@@ -20,6 +20,7 @@ interface Product {
     description: string;
     price: number;
     category: string;
+    image: string; // Asegúrate de que este campo esté presente
 }
 
 export default function PantallaCatalogoProductos() {
@@ -31,7 +32,7 @@ export default function PantallaCatalogoProductos() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://192.168.8.6:8082/api/products/get');
+                const response = await axios.get('http://192.168.8.6:8082/api/products/get'); //(IPCONFIG)
                 if (response.status === 200) {
                     setProducts(response.data as Product[]);
                 }
@@ -47,6 +48,7 @@ export default function PantallaCatalogoProductos() {
 
     const renderProductItem = ({ item }: { item: Product }) => (
         <View style={styles.productCard}>
+            <Image source={{ uri: item.image }} style={styles.productImage} />
             <Text style={styles.productName}>{item.name}</Text>
             <Text style={styles.productDescription}>{item.description}</Text>
             <View style={styles.detailsContainer}>
@@ -206,6 +208,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#f8f9fa',
         borderRadius: 8,
         padding: 15,
+        marginBottom: 10,
+    },
+    productImage: {
+        width: '100%',
+        height: 150,
+        borderRadius: 8,
         marginBottom: 10,
     },
     productName: {
