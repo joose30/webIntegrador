@@ -1,7 +1,7 @@
 // app/index.tsx
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import PantallaLogin from '@/componentes/PantallaLogin';
+import PantallaLogin from '@/componentes/PantallaLogin1';
 import PantallaPrincipal from '@/componentes/PantallaPrincipal';
 
 export default function HomeScreen() {
