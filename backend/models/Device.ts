@@ -4,7 +4,7 @@ const DeviceSchema = new mongoose.Schema({
     macAddress: {
         type: String,
         required: true,
-        unique: true,  // Evita que haya dispositivos duplicados con la misma MAC
+        unique: true,
         trim: true
     },
     name: {
@@ -19,6 +19,12 @@ const DeviceSchema = new mongoose.Schema({
         type: String,
         enum: ['active', 'inactive'],
         default: 'active'
+    },
+    // Nuevo campo para relacionar el dispositivo al usuario
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     createdAt: {
         type: Date,
