@@ -18,14 +18,11 @@ export default function PantallaRegistroDispositivo() {
 
     const handleRegisterDevice = async () => {
         try {
-            // Supongamos que tienes el token almacenado (puede venir de un contexto o SecureStore)
-            const token = 'TU_TOKEN_AQUI';
-
-            const response = await axios.post(
-                'http://192.168.8.6:8082/api/devices/register',
-                { macAddress, name, location },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            const response = await axios.post('http://192.168.8.6:8082/api/devices/register', {
+                macAddress,
+                name,
+                location
+            });
 
             if (response.status === 201) {
                 setMessage('Dispositivo registrado con éxito');
